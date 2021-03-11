@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calculette</title>
+
+    <style>
+        body{
+            display: flex;
+            flex-direction: column;
+            align-content: center;
+        }
+        .container{
+            width: 20vw;
+            height: 40vw;
+            margin: auto;
+            padding: 4%;
+            border: solid;
+            border-radius: 5%;
+            background-color: paleturquoise;
+        }
+        #write{
+            width: 97%;
+            height: 18%;
+            font-size:2.5vw;
+            text-align: right;
+            border-radius: 5%;
+            margin-bottom:5%;
+            padding-right: 5%;
+        }
+        #show{
+            width: 100%;
+            height: 90%;
+            font-size:2.5vw;
+            text-align: right;
+            border-radius: 5%;
+            margin-bottom:5%;
+            position: relative;
+            padding-right: 5%;
+        }
+        #historique{
+            position: absolute;  
+            bottom: 10%;
+            right: 5%;
+            font-size:2vw;
+            color: darkgrey;
+            max-width: 100%;
+        }
+        .line{
+            display: flex;
+            flex-direction: row;
+            justify-content: space-between;
+            align-items: center;
+        }
+        button{
+            width: 25%;
+            height: 3vw;
+            font-size: 1.5vw;
+        }
+        .second{
+            position: relative;
+            width: 97%;
+            height: 20%;
+            text-align: right;
+        }
+        .buttonenter{
+            width: 100%;
+        }
+
+
+    </style>
+
+</head>
+<body>
+
+    <div class="container">
+        <p style="text-align: center; font-family:-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif; font-size: 2vw;"><b>Challenge N°2</b></p>
+        <div class="second">
+            <input id="show" readonly></input>
+            <span id="historique">=</span>           
+        </div>
+        <input id="write" readonly></input>
+        
+        <div class="line">
+            <button id="7" onclick="num(this.value)" value="7">7</button>
+            <button id="8" onclick="num(this.value)" value="8">8</button>
+            <button id="9" onclick="num(this.value)" value="9">9</button>
+            <button id="/" onclick="sign(this.value,document.getElementById('show').value , document.getElementById('write').value)" value="/">/</button>
+        </div>
+        <div class="line">
+            <button id="4" onclick="num(this.value)" value="4">4</button>
+            <button id="5" onclick="num(this.value)" value="5">5</button>
+            <button id="6" onclick="num(this.value)" value="6">6</button>
+            <button id="*" onclick="sign(this.value,document.getElementById('show').value , document.getElementById('write').value)" value="x">x</button>
+        </div>
+        <div class="line">
+            <button id="1" onclick="num(this.value)" value="1">1</button>
+            <button id="2" onclick="num(this.value)" value="2">2</button>
+            <button id="3" onclick="num(this.value)" value="3">3</button>
+            <button id="-" onclick="sign(this.value,document.getElementById('show').value , document.getElementById('write').value)" value="-">-</button>
+        </div>
+        <div class="line">
+            <button id="0" onclick="num(this.value)" value="0">0</button>
+            <button id="." onclick="num(this.value)" value=".">,</button>
+            <button id="Delete" onclick="document.getElementById('show').value ='';document.getElementById('write').value ='';document.getElementById('historique').innerHTML = '=';" value="C">C</button>
+            <button id="+" onclick="sign(this.value,document.getElementById('show').value , document.getElementById('write').value)" value="+">+</button>
+        </div>
+
+            <button id="Enter" class="buttonenter" onclick="equal(document.getElementById('show').value , document.getElementById('write').value)">=</button>
+
+    </div>
+
+</body>
+
+<script>
+    function num(number){
+        document.getElementById("write").value += number;
+    }
+
+    function sign(sign,a,b){
+        var format = /[ `!@#$%^&*()_+\-=\[\]{}x;':"\\|<>\/?~]/;
+    if(format.test(a)){
+        equal(a,b);
+        document.getElementById("show").value += document.getElementById("write").value 
+        document.getElementById("show").value += sign;
+        document.getElementById("write").value ="";
+    }else{
+        document.getElementById("show").value += document.getElementById("write").value 
+        document.getElementById("show").value += sign;
+        document.getElementById("write").value ="";
+    }
+    }
+
+    function equal(a,b){
+        signe = a.slice(-1);
+        nbavantsigne = parseFloat(a.substring(0, a.length - 1));
+        b = parseFloat(b);
+        if(document.getElementById("historique").innerHTML == "="){
+            document.getElementById("historique").innerHTML += a.substring(0, a.length - 1).concat(signe,b);
+        }else{
+            document.getElementById("historique").innerHTML += signe.concat(b);
+        }    
+        if(signe == "+"){
+            plus(nbavantsigne,b);
+        }else if (signe == "-"){
+            minus(nbavantsigne,b);
+        }else if (signe == "x"){
+            multiply(nbavantsigne,b);
+        }else if (signe == "/"){
+            divide(nbavantsigne,b);
+        }
+    }
+
+    function plus(x,y){
+        document.getElementById("show").value = x + y;
+        document.getElementById("write").value ="";
+    }
+
+    function minus(x,y){
+        document.getElementById("show").value = x-y;
+        document.getElementById("write").value ="";
+    }
+
+    function multiply(x,y){
+        document.getElementById("show").value = x * y;
+        document.getElementById("write").value ="";
+    }
+
+    function divide(x,y){
+        document.getElementById("show").value = x / y;
+        document.getElementById("write").value ="";
+    }
+
+    window.addEventListener("keydown", onKeyDown, true);
+    function onKeyDown(e){
+        boutons = ["0","1","2","3","4","5","6","7","8","9","/","*","-","+","Enter","Delete","."];
+        for(let i = 0; i < boutons.length; i++){
+            if(e.key == boutons[i]){
+                document.querySelector("button[id='" + boutons[i] + "']").click();
+                
+            }
+        }
+
+    }
+</script>
+
+
+
+</html>
